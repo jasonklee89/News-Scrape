@@ -3,7 +3,6 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 
 // Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
 // It works on the client and on the server
 var axios = require("axios");
 var cheerio = require("cheerio");
@@ -27,18 +26,20 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/news-scrape", { useNewUrlParser: true });
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.connect(MONGODB_URI);
 
 // Routes
 
-// A GET route for scraping the echoJS website
+// A GET route for scraping the Mix website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("http://www.mix.com/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every h2 within an article tag, and do the following:
+    // Now, we grab every a within an ArticleCard__title, and do the following:
     $("a.ArticleCard__title").each(function(i, element) {
       // Save an empty result object
       var result = {};
@@ -103,7 +104,7 @@ app.post("/articles/:id", function(req, res) {
   // ====
   // save the new note that gets posted to the Notes collection
   // then find an article from the req.params.id
-  // and update it's "note" property with the _id of the new note
+  // and set it's "note" property with the _id of the new note
   db.Note.create({
     title: req.body.title,
     body: req.body.body
@@ -112,7 +113,7 @@ app.post("/articles/:id", function(req, res) {
     return db.Article.findOneAndUpdate({
       _id: req.params.id
     }, {
-      $push: { note: dbNote._id } }, { new: true });
+      $set: { note: dbNote._id } }, { new: true });
   })
   .then(function(dbArticle) {
     res.json(dbArticle);
