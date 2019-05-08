@@ -10,7 +10,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -24,10 +24,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_bpxh22cl:mmmb9jm8tmva01ba9tf2ejv4m1@ds227664.mlab.com:27664/heroku_bpxh22cl";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 mongoose.connect(MONGODB_URI);
-// mongoose.connect("mongodb://localhost/news-scrape", { useNewUrlParser: true });
 
 // Routes
 
@@ -53,7 +52,6 @@ app.get("/scrape", function(req, res) {
       result.summary = $(this)
         .children("a.ArticleCard__description")
         .text()
-        // .replace('"','');
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
