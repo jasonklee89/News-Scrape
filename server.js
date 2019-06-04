@@ -101,11 +101,6 @@ app.get("/articles/:id", function(req, res) {
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function(req, res) {
-  // TODO
-  // ====
-  // save the new note that gets posted to the Notes collection
-  // then find an article from the req.params.id
-  // and set it's "note" property with the _id of the new note
   db.Note.create({
     title: req.body.title,
     body: req.body.body
