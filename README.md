@@ -13,4 +13,4 @@ App that lets users view and leave comments on the latest news from Mix.com.  Vi
 https://news-scrape-mix.herokuapp.com/
 
 ### Screenshot
-![News-Scrape](/images/screenshot.png?raw=true "News-Scrape")
+![News-Scrape](/public/images/screenshot.png?raw=true "News-Scrape")
